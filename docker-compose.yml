@@ -8,7 +8,7 @@ services:
       - "80:80"
     volumes:
       - nginx_config:/etc/nginx
-      - static_content_game:/etc/nginx/html
+#      - static_content_game:/etc/nginx/html
     networks:
       pg_network:
           aliases:
@@ -17,11 +17,11 @@ services:
 
 
   landing:
-    image: expovin/pglanding:0.8
+    image: expovin/pglanding:latest
     deploy:
       replicas: 1
-    ports:
-      - "3010:3000"
+#    ports:
+#      - "3010:3000"
     networks:
       pg_network:
           aliases:
@@ -29,13 +29,13 @@ services:
     container_name: pg_landing
 
   game:
-    image: expovin/presalesgame:0.82
+    image: expovin/presalesgame:latest
     deploy:
       replicas: 1
-    ports:
-      - "3020:3000"
-    volumes:
-      - static_content_game:/usr/src/app/dist
+#    ports:
+#      - "3020:3000"
+#    volumes:
+#      - static_content_game:/usr/src/app/dist
     networks:
       pg_network:
           aliases:
