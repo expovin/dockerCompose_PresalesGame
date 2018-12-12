@@ -2,6 +2,7 @@ version: '3.3'
 services:
   reverse-proxy:
     image: nginx:latest
+    restart: always
     deploy:
       replicas: 1
     ports:
@@ -18,6 +19,7 @@ services:
 
   landing:
     image: expovin/pglanding:latest
+    restart: always
     deploy:
       replicas: 1
 #    ports:
@@ -30,6 +32,7 @@ services:
 
   game:
     image: expovin/presalesgame:latest
+    restart: always
     deploy:
       replicas: 1
 #    ports:
@@ -44,7 +47,10 @@ services:
 
 #  qix:
 #    image: qlikcore/engine:12.260.0
+#    restart: always
 #    command: -S AcceptEULA=yes
+#    environment:
+#       AcceptEULA: 'yes'
 #    deploy:
 #      replicas: 1
 #    ports:
@@ -57,11 +63,31 @@ services:
 #            - qix_node    
 #    container_name: pg_qix
 
-
+  mysql:
+    image: mysql/mysql-server:latest
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: 'super$ecret' # TODO: Change this
+      MYSQL_USER: 'pguser'
+      MYSQL_PASSWORD: 'pgpasswd'    
+      MYSQL_DATABASE: 'pg_data'
+    deploy:
+      replicas: 1
+    ports:
+      - "3306:3306"
+    volumes:
+      - game_data:/var/lib/mysql     
+    networks:
+      pg_network:
+          aliases:
+            - db_node     
+    container_name: pg_db 
 
 volumes:
   nginx_config:
   static_content_game:
+  game_data:
 
 networks:
   pg_network:
